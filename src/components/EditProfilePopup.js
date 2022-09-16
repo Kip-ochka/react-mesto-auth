@@ -9,11 +9,12 @@ const EditProfilePopup = ({isOpen, onClose, onUpdateUser, isLoading}) => {
     const {values, handleChange, errors, isValid, setValues, resetForm} = useFormAndValidation(user)
 
     useEffect(() => {
-        setValues(user)
-        if (!isOpen) {
-            resetForm()
-        }
-    }, [user, isOpen])
+            setValues(user)
+            if (!isOpen) {
+                resetForm()
+            }
+        }, // eslint-disable-next-line react-hooks/exhaustive-deps
+        [user, isOpen])
 
     function handleSubmit(e) {
         e.preventDefault()

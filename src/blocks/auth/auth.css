@@ -1,0 +1,5 @@
+.auth {
+    min-height: calc(100vh - 271px);
+    display: flex;
+    justify-content: center;
+}
