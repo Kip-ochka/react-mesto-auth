@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Footer from './Footer'
 import Header from './Header'
 import ImagePopup from './ImagePopup'
@@ -13,14 +13,16 @@ import {Route, Routes, Navigate} from "react-router-dom";
 import {Register} from "./Register";
 import {Login} from "./Login";
 import {ProtectedRoute} from "./ProtectedRoute";
+import {InfoTooltip} from "./InfoTooltip";
 
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false)
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false)
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false)
     const [isImagePopupOpen, setIsImagePopupOpen] = useState(false)
+    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false)
 
-    const [loggedIn, setLoggedIn] = useState(true)
+    const [loggedIn, setLoggedIn] = useState(false)
     const [isLoadingUser, setIsLoadingUser] = useState(false)
     const [isLoadingAddCard, setIsLoadingAddCard] = useState(false)
     const [isLoadingAvatar, setIsLoadingAvatar] = useState(false)
@@ -108,6 +110,7 @@ function App() {
         setIsEditProfilePopupOpen(false)
         setIsAddPlacePopupOpen(false)
         setIsImagePopupOpen(false)
+        setIsInfoTooltipOpen(false)
         setSelectedCard({})
     }
 
@@ -135,7 +138,7 @@ function App() {
     return (<CurrentUserContext.Provider value={currentUser}>
             <div className='App'>
                 <div className='page'>
-                    <Header/>
+                    <Header loggedIn={loggedIn}/>
                     <Routes>
                         <Route path='/' element={
                             <ProtectedRoute loggedIn={loggedIn}>
@@ -171,6 +174,7 @@ function App() {
                         onClose={closeAllPopup}
                         isOpen={isImagePopupOpen}
                     />
+                    <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopup}/>
                 </div>
             </div>
         </CurrentUserContext.Provider>
