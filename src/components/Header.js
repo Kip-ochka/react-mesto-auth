@@ -1,20 +1,43 @@
 import logo from '../images/logos/logo.svg'
-import {Link, useLocation} from "react-router-dom";
+import {Link, Route, Routes} from "react-router-dom";
 
 
-function Header({loggedIn}) {
-    const location = useLocation()
-
+function Header({}) {
     return (
         <header className="header">
             <img src={logo} alt="Логотип Место Russia" className="header__logo"/>
-            {loggedIn
-                ?<Link className={'header__link'} to='sign-in'>Выход</Link>
-                :location.pathname === "/sign-up"
-                    ? <Link className={'header__link'} to='/sign-in'>Вход</Link>
-                    : <Link className={'header__link'} to='/sign-up'>Регистрация</Link>}
+            <Routes>
+                <Route
+                    path="sign-up"
+                    element={
+                        <Link className="header__link" to="/sign-in">
+                            Войти
+                        </Link>
+                    }
+                />
+                <Route
+                    path="/"
+                    element={
+                        <Link
+                            className="header__link"
+                            to="/sign-in"
+                        >
+                            Выйти
+                        </Link>
+                    }
+                />
+                <Route
+                    path="/sign-in"
+                    element={
+                        <Link className="header__link" to="/sign-up">
+                            Регистрация
+                        </Link>
+                    }
+                />
+            </Routes>
         </header>
     )
+
 }
 
 export default Header

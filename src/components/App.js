@@ -9,11 +9,12 @@ import api from "../utils/Api";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-import {Route, Routes, Navigate} from "react-router-dom";
+import {Route, Routes, redirect} from "react-router-dom";
 import {Register} from "./Register";
 import {Login} from "./Login";
 import {ProtectedRoute} from "./ProtectedRoute";
 import {InfoTooltip} from "./InfoTooltip";
+import {auth} from "../utils/Auth";
 
 function App() {
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false)
@@ -21,7 +22,7 @@ function App() {
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false)
     const [isImagePopupOpen, setIsImagePopupOpen] = useState(false)
     const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false)
-
+    const [isSuccess, setIsSuccess] = useState(false)
     const [loggedIn, setLoggedIn] = useState(false)
     const [isLoadingUser, setIsLoadingUser] = useState(false)
     const [isLoadingAddCard, setIsLoadingAddCard] = useState(false)
@@ -100,7 +101,6 @@ function App() {
 
     function handleClosePopup(e) {
         if (e.target.classList.contains('popup') || e.target.classList.contains('popup__close-button')) {
-            //реализация закрытия по клику на оверлей либо по клику на крестик
             closeAllPopup();
         }
     }
@@ -135,6 +135,18 @@ function App() {
             .catch((err) => console.log(err))
     }
 
+    function onRegistration (password, email) {
+        auth.register(password,email).then(r=>r).then(
+            setIsSuccess(true),
+            setIsInfoTooltipOpen(true),
+            redirect('/sign-in'),
+        ).catch(err=>{
+            console.log(err)
+            setIsSuccess(false)
+            setIsInfoTooltipOpen(true)
+        })
+    }
+
     return (<CurrentUserContext.Provider value={currentUser}>
             <div className='App'>
                 <div className='page'>
@@ -152,7 +164,7 @@ function App() {
                                     handleCardDelete={handleCardDelete}
                                 />
                             </ProtectedRoute>}/>
-                        <Route path='/sign-up' element={<Register/>}/>
+                        <Route path='/sign-up' element={<Register onRegistration={onRegistration}/>}/>
                         <Route path='/sign-in' element={<Login/>}/>
                     </Routes>
 
@@ -174,7 +186,7 @@ function App() {
                         onClose={closeAllPopup}
                         isOpen={isImagePopupOpen}
                     />
-                    <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopup}/>
+                    <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopup} isSuccess={isSuccess}/>
                 </div>
             </div>
         </CurrentUserContext.Provider>
