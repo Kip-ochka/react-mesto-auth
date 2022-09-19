@@ -11,10 +11,7 @@ const AddPlacePopup = ({ isOpen, onClose, onAddCard, isLoading }) => {
   const { values, handleChange, errors, isValid, setValues, resetForm } =
     useFormAndValidation(cardData)
   useEffect(() => {
-    setValues(cardData)
-    if (!isOpen) {
-      resetForm()
-    }
+    resetForm(cardData)
   }, [isOpen])
 
   function handleSubmit(e) {

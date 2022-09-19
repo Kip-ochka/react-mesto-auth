@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useFormAndValidation } from '../hooks/useFormAndValidation'
+import { useEffect } from 'react'
 
 const Register = ({ onRegistration }) => {
   const accountData = {
@@ -12,8 +13,11 @@ const Register = ({ onRegistration }) => {
   function handleRegistrationSubmit(evt) {
     evt.preventDefault()
     onRegistration(values.password, values.email)
-    resetForm()
   }
+
+  useEffect(() => {
+    resetForm(accountData)
+  }, [])
   return (
     <section className="auth">
       <form className="form" onSubmit={handleRegistrationSubmit}>

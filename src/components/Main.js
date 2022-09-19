@@ -58,7 +58,6 @@ function Main({
               card={card}
               onCardClick={onCardClick}
               key={card._id}
-              currentUser={currentUser}
               onCardLike={handleCardLike}
               onCardDelete={handleCardDelete}
             />

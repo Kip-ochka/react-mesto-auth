@@ -24,9 +24,7 @@ function App() {
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
-  const [isLoadingUser, setIsLoadingUser] = useState(false)
-  const [isLoadingAddCard, setIsLoadingAddCard] = useState(false)
-  const [isLoadingAvatar, setIsLoadingAvatar] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
   const [selectedCard, setSelectedCard] = useState({})
   const [currentUser, setCurrentUser] = useState({})
@@ -80,43 +78,43 @@ function App() {
   }
 
   function handleUpdateUser(userInfo) {
-    setIsLoadingUser(true)
+    setIsLoading(true)
     api
       .setUserInfo(userInfo.values)
       .then((newUserData) => {
         setCurrentUser(newUserData)
         closeAllPopup()
       })
-      .finally(() => setIsLoadingUser(false))
       .catch((e) => console.log(e))
+      .finally(() => setIsLoading(false))
   }
 
   function handleUpdateAvatar(avatarData) {
-    setIsLoadingAvatar(true)
+    setIsLoading(true)
     api
       .updateAvatar(avatarData.avatar)
       .then((newUserAvatar) => {
         setCurrentUser(newUserAvatar)
         closeAllPopup()
       })
-      .finally(() => {
-        setIsLoadingAvatar(false)
-      })
       .catch((e) => console.log(e))
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   function handleAddCard(cardData) {
-    setIsLoadingAddCard(true)
+    setIsLoading(true)
     api
       .addCard(cardData.values)
       .then((newCard) => {
         setCards([newCard, ...cards])
         closeAllPopup()
       })
-      .finally(() => {
-        setIsLoadingAddCard(false)
-      })
       .catch((e) => console.log(e))
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
 
   function handleClosePopup(e) {
@@ -161,34 +159,28 @@ function App() {
   function handleCardDelete(card) {
     api
       .removeCard(card._id)
-      .then(setCards(cards.filter((item) => item._id !== card._id)))
+      .then(() => setCards(cards.filter((item) => item._id !== card._id)))
       .catch((err) => console.log(err))
   }
 
   function onRegistration(password, email) {
     auth
       .signUp(password, email)
-      .then((r) => r)
-      .then(
-        setIsSuccess(true),
-        setIsInfoTooltipOpen(true),
-        navigate('/sign-in')
-      )
+      .then(navigate('/sign-in'))
       .catch((err) => {
         console.log(err)
-        setIsSuccess(false)
-        setIsInfoTooltipOpen(true)
       })
+      .finally(setIsSuccess(false), setIsInfoTooltipOpen(true))
   }
 
   function onLogin(password, email) {
     auth
       .signIn(password, email)
-      .then((r) => {
-        if (r.token) {
-          localStorage.setItem('token', r.token)
+      .then((response) => {
+        if (response.token) {
+          localStorage.setItem('token', response.token)
         }
-        return r
+        return response
       })
       .then(setLoggedIn(true), navigate('/'))
       .catch((err) => {
@@ -199,16 +191,16 @@ function App() {
   }
 
   function handleCheckToken() {
-    if (localStorage.getItem('token')) {
-      const jwt = localStorage.getItem('token')
+    const jwt = localStorage.getItem('token')
+    if (jwt) {
       auth
         .checkToken(jwt)
-        .then((r) => {
-          setProfileEmail(r.data.email)
+        .then((response) => {
+          setProfileEmail(response.data.email)
           setLoggedIn(true)
           navigate('/')
         })
-        .catch((e) => console.log(e))
+        .catch((e) => console.log(e), navigate('/sign-in'), setLoggedIn(false))
     }
   }
 
@@ -221,6 +213,7 @@ function App() {
   }
 
   useEffect(() => {
+    console.log(profileEmail)
     handleCheckToken()
   }, [])
 
@@ -254,10 +247,7 @@ function App() {
               path="/sign-up"
               element={<Register onRegistration={onRegistration} />}
             />
-            <Route
-              path="/sign-in"
-              element={<Login onLogin={onLogin} setLoggedIn={setLoggedIn} />}
-            />
+            <Route path="/sign-in" element={<Login onLogin={onLogin} />} />
           </Routes>
 
           <Footer />
@@ -265,26 +255,26 @@ function App() {
             isOpen={isEditProfilePopupOpen}
             onClose={handleClosePopup}
             onUpdateUser={handleUpdateUser}
-            isLoading={isLoadingUser}
+            isLoading={isLoading}
           />
           <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={handleClosePopup}
             onAddCard={handleAddCard}
-            isLoading={isLoadingAddCard}
+            isLoading={isLoading}
           />
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={handleClosePopup}
             onUpdateAvatar={handleUpdateAvatar}
-            isLoading={isLoadingAvatar}
+            isLoading={isLoading}
           />
           <PopupWithForm
             name="confirm"
             title="Вы уверены?"
             buttonText="Да"
             onClose={closeAllPopup}
-          ></PopupWithForm>
+          />
           <ImagePopup
             card={selectedCard}
             onClose={closeAllPopup}
