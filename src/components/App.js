@@ -9,7 +9,7 @@ import api from "../utils/Api";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
-import {Route, Routes, redirect} from "react-router-dom";
+import {Route, Routes, useNavigate} from "react-router-dom";
 import {Register} from "./Register";
 import {Login} from "./Login";
 import {ProtectedRoute} from "./ProtectedRoute";
@@ -27,11 +27,12 @@ function App() {
     const [isLoadingUser, setIsLoadingUser] = useState(false)
     const [isLoadingAddCard, setIsLoadingAddCard] = useState(false)
     const [isLoadingAvatar, setIsLoadingAvatar] = useState(false)
-
+    const navigate = useNavigate()
     const [selectedCard, setSelectedCard] = useState({})
     const [currentUser, setCurrentUser] = useState({})
     const [cards, setCards] = useState([])
     const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard
+    const [profileEmail, setProfileEmail] = useState('')
 
     useEffect(() => {
         function closeByEscape(evt) {
@@ -136,10 +137,10 @@ function App() {
     }
 
     function onRegistration (password, email) {
-        auth.register(password,email).then(r=>r).then(
+        auth.signUp(password,email).then(r=>r).then(
             setIsSuccess(true),
             setIsInfoTooltipOpen(true),
-            redirect('/sign-in'),
+            navigate('/sign-in'),
         ).catch(err=>{
             console.log(err)
             setIsSuccess(false)
@@ -147,10 +148,48 @@ function App() {
         })
     }
 
+    function onLogin (password, email) {
+        auth.signIn(password, email).then(r=>{
+            if(r.token) {
+                localStorage.setItem("token", r.token)
+            } return r
+        }).then(
+            setLoggedIn(true),
+            navigate('/')
+        ).catch(err=>{
+            console.log(err)
+            setIsSuccess(false)
+            setIsInfoTooltipOpen(true)
+        })
+    }
+
+    function handleCheckToken () {
+        if(localStorage.getItem('token')){
+            const jwt = localStorage.getItem('token')
+            auth.checkToken(jwt).then(r=>{
+                setProfileEmail(r.data.email)
+                setLoggedIn(true)
+                navigate('/')
+            }).catch(e=>console.log(e))
+        }
+    }
+
+    function handleUserLogOut () {
+        if(loggedIn) {
+            localStorage.removeItem("token")
+            setLoggedIn(false)
+            navigate('/')
+        }
+    }
+
+    useEffect(()=>{
+        handleCheckToken()
+    }, [])
+
     return (<CurrentUserContext.Provider value={currentUser}>
             <div className='App'>
                 <div className='page'>
-                    <Header loggedIn={loggedIn}/>
+                    <Header loggedIn={loggedIn} profileEmail={profileEmail} handleUserLogOut={handleUserLogOut}/>
                     <Routes>
                         <Route path='/' element={
                             <ProtectedRoute loggedIn={loggedIn}>
@@ -165,7 +204,7 @@ function App() {
                                 />
                             </ProtectedRoute>}/>
                         <Route path='/sign-up' element={<Register onRegistration={onRegistration}/>}/>
-                        <Route path='/sign-in' element={<Login/>}/>
+                        <Route path='/sign-in' element={<Login onLogin={onLogin} setLoggedIn={setLoggedIn}/>}/>
                     </Routes>
 
                     <Footer/>

@@ -1,14 +1,24 @@
 import {useFormAndValidation} from "../hooks/useFormAndValidation";
 
-const Login = () => {
+const Login = ({onLogin, setLoggedIn}) => {
     const loginData = {
         email:'',
         password:'',
     }
     const {values, handleChange, errors, isValid, setValues, resetForm} = useFormAndValidation(loginData)
+
+    function handleLoginSubmit (evt) {
+        evt.preventDefault()
+        onLogin(values.password, values.email)
+        resetForm()
+    }
+
+    function handleLogInClick () {
+        setLoggedIn(true)
+    }
     return (
         <section className='auth'>
-            <form className='form'>
+            <form className='form' onSubmit={handleLoginSubmit}>
                 <h3 className='form__title'>Вход</h3>
                 <label className='form__formfield form__formfield_type_name'>
                     <input
@@ -40,7 +50,7 @@ const Login = () => {
                     <span
                         className={`form__input-error form__input-error_type_auth ${isValid ? '' : 'form__input-error_active'}`}>{errors.password}</span>
                 </label>
-                <button type="submit" name="login" className='form__button form__button_type_auth' disabled={false}>
+                <button type="submit" name="login" className='form__button form__button_type_auth' disabled={!isValid} onClick={handleLogInClick}>
                     Войти
                 </button>
             </form>

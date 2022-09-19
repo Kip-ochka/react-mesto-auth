@@ -1,6 +1,6 @@
 class Auth {
     constructor() {
-        this.base_url = 'https://auth.nomoreparties.co'
+        this._base_url = 'https://auth.nomoreparties.co'
     }
 
     _getResponse (res) {
@@ -10,14 +10,34 @@ class Auth {
         return res.json()
     }
 
-    register(password, email) {
-        return fetch(`${this.base_url}/signup`, {
+    signUp(password, email) {
+        return fetch(`${this._base_url}/signup`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ email, password }),
         }).then(this._getResponse)
+    }
+
+    signIn(password, email) {
+        return fetch(`${this._base_url}/signin`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+        }).then(this._getResponse);
+    }
+
+    checkToken(jwt) {
+        return fetch(`${this._base_url}/users/me`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${jwt}`,
+            },
+        }).then(this._getResponse);
     }
 }
 

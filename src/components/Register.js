@@ -47,7 +47,7 @@ const Register = ({onRegistration}) => {
                     <span
                         className={`form__input-error form__input-error_type_auth ${isValid ? '' : 'form__input-error_active'}`}>{errors.password}</span>
                 </label>
-                <button type="submit" name="login" className='form__button form__button_type_auth' disabled={false}>
+                <button type="submit" name="login" className='form__button form__button_type_auth' disabled={!isValid}>
                     Зарегистрироваться
                 </button>
                 <p className='auth__caption'>Уже зарегестрированы?
