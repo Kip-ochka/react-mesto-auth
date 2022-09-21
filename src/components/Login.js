@@ -20,17 +20,17 @@ const Login = ({ onLogin }) => {
   }, [])
 
   return (
-    <section className="auth">
-      <form className="form" onSubmit={handleLoginSubmit}>
-        <h3 className="form__title">Вход</h3>
-        <label className="form__formfield form__formfield_type_name">
+    <section className='auth'>
+      <form className='form' onSubmit={handleLoginSubmit}>
+        <h3 className='form__title'>Вход</h3>
+        <label className='form__formfield form__formfield_type_name'>
           <input
-            type="email"
-            className="form__input form__input_type_auth"
-            placeholder="Email"
-            name="email"
-            minLength="4"
-            maxLength="40"
+            type='email'
+            className='form__input form__input_type_auth'
+            placeholder='Email'
+            name='email'
+            minLength='4'
+            maxLength='40'
             value={values.email || ''}
             onChange={handleChange}
             required
@@ -43,14 +43,14 @@ const Login = ({ onLogin }) => {
             {errors.email}
           </span>
         </label>
-        <label className="form__formfield ">
+        <label className='form__formfield '>
           <input
-            type="password"
-            className="form__input form__input_type_auth"
-            placeholder="Пароль"
-            name="password"
-            minLength="4"
-            maxLength="40"
+            type='password'
+            className='form__input form__input_type_auth'
+            placeholder='Пароль'
+            name='password'
+            minLength='4'
+            maxLength='40'
             value={values.password || ''}
             onChange={handleChange}
             required
@@ -64,9 +64,9 @@ const Login = ({ onLogin }) => {
           </span>
         </label>
         <button
-          type="submit"
-          name="login"
-          className="form__button form__button_type_auth"
+          type='submit'
+          name='login'
+          className='form__button form__button_type_auth'
           disabled={!isValid}
         >
           Войти

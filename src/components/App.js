@@ -179,15 +179,26 @@ function App() {
       .then((response) => {
         if (response.token) {
           localStorage.setItem('token', response.token)
+          setProfileEmail(email)
+          setLoggedIn(true)
+          navigate('/')
         }
         return response
       })
-      .then(setLoggedIn(true), navigate('/'))
       .catch((err) => {
         console.log(err)
         setIsSuccess(false)
         setIsInfoTooltipOpen(true)
       })
+  }
+
+  function handleUserLogOut() {
+    if (loggedIn) {
+      localStorage.removeItem('token')
+      setProfileEmail('')
+      setLoggedIn(false)
+      navigate('/')
+    }
   }
 
   function handleCheckToken() {
@@ -204,23 +215,14 @@ function App() {
     }
   }
 
-  function handleUserLogOut() {
-    if (loggedIn) {
-      localStorage.removeItem('token')
-      setLoggedIn(false)
-      navigate('/')
-    }
-  }
-
   useEffect(() => {
-    console.log(profileEmail)
     handleCheckToken()
   }, [])
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="App">
-        <div className="page">
+      <div className='App'>
+        <div className='page'>
           <Header
             loggedIn={loggedIn}
             profileEmail={profileEmail}
@@ -228,7 +230,7 @@ function App() {
           />
           <Routes>
             <Route
-              path="/"
+              path='/'
               element={
                 <ProtectedRoute loggedIn={loggedIn}>
                   <Main
@@ -244,10 +246,10 @@ function App() {
               }
             />
             <Route
-              path="/sign-up"
+              path='/sign-up'
               element={<Register onRegistration={onRegistration} />}
             />
-            <Route path="/sign-in" element={<Login onLogin={onLogin} />} />
+            <Route path='/sign-in' element={<Login onLogin={onLogin} />} />
           </Routes>
 
           <Footer />
@@ -270,9 +272,9 @@ function App() {
             isLoading={isLoading}
           />
           <PopupWithForm
-            name="confirm"
-            title="Вы уверены?"
-            buttonText="Да"
+            name='confirm'
+            title='Вы уверены?'
+            buttonText='Да'
             onClose={closeAllPopup}
           />
           <ImagePopup
