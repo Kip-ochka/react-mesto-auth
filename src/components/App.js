@@ -166,11 +166,15 @@ function App() {
   function onRegistration(password, email) {
     auth
       .signUp(password, email)
-      .then(navigate('/sign-in'))
+      .then(() => {
+        navigate('/sign-in')
+        setIsSuccess(true)
+      })
       .catch((err) => {
         console.log(err)
+        setIsSuccess(false)
       })
-      .finally(setIsSuccess(false), setIsInfoTooltipOpen(true))
+      .finally(() => setIsInfoTooltipOpen(true))
   }
 
   function onLogin(password, email) {
@@ -211,7 +215,11 @@ function App() {
           setLoggedIn(true)
           navigate('/')
         })
-        .catch((e) => console.log(e), navigate('/sign-in'), setLoggedIn(false))
+        .catch((e) => {
+          console.log(e)
+          navigate('/sign-in')
+          setLoggedIn(false)
+        })
     }
   }
 
