@@ -27,6 +27,7 @@ class Auth {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ email, password }),
+      credentials: 'include',
     }).then(this._getResponse)
   }
 

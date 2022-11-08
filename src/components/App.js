@@ -51,14 +51,14 @@ function App() {
     }
   }, [isOpen])
 
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((userData) => {
-        setCurrentUser(userData)
-      })
-      .catch((err) => console.log(err))
-  }, [])
+  // useEffect(() => {
+  //   api
+  //     .getUserInfo()
+  //     .then((userData) => {
+  //       setCurrentUser(userData)
+  //     })
+  //     .catch((err) => console.log(err))
+  // }, [])
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true)
@@ -135,14 +135,14 @@ function App() {
     setSelectedCard({})
   }
 
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then((initialCards) => {
-        setCards(initialCards)
-      })
-      .catch((err) => console.log(err))
-  }, [])
+  // useEffect(() => {
+  //   api
+  //     .getInitialCards()
+  //     .then((initialCards) => {
+  //       setCards(initialCards)
+  //     })
+  //     .catch((err) => console.log(err))
+  // }, [])
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((item) => item._id === currentUser._id)
@@ -176,15 +176,16 @@ function App() {
       })
       .finally(() => setIsInfoTooltipOpen(true))
   }
-
+  
   function onLogin(password, email) {
     auth
-      .signIn(password, email)
-      .then((response) => {
-        if (response.token) {
-          localStorage.setItem('token', response.token)
-          setProfileEmail(email)
-          setLoggedIn(true)
+    .signIn(password, email)
+    .then((response) => {
+      console.log(response)
+      if (response.token) {
+        localStorage.setItem('token', response.token)
+        setProfileEmail(email)
+        setLoggedIn(true)
           navigate('/')
         }
         return response
