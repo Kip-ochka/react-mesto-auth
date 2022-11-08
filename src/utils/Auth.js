@@ -1,6 +1,6 @@
 class Auth {
   constructor() {
-    this._base_url = 'https://auth.nomoreparties.co'
+    this._base_url = 'http://api.mesto.kip0.nomoredomains.icu'
   }
 
   _getResponse(res) {
@@ -37,6 +37,7 @@ class Auth {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${jwt}`,
       },
+      credentials: 'include'
     }).then(this._getResponse)
   }
 }
