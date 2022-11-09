@@ -31,12 +31,21 @@ class Auth {
     }).then(this._getResponse)
   }
 
-  checkToken(jwt) {
+  signout() {
+    return fetch(`${this._base_url}/signout`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
+    })
+  }
+
+  checkToken() {
     return fetch(`${this._base_url}/users/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${jwt}`,
       },
       credentials: 'include'
     }).then(this._getResponse)

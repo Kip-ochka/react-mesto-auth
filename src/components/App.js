@@ -51,14 +51,20 @@ function App() {
     }
   }, [isOpen])
 
-  // useEffect(() => {
-  //   api
-  //     .getUserInfo()
-  //     .then((userData) => {
-  //       setCurrentUser(userData)
-  //     })
-  //     .catch((err) => console.log(err))
-  // }, [])
+
+useEffect(() => {
+  getAlldata()
+}, [loggedIn])
+
+function getAlldata(){
+  if(loggedIn) {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+    .then(([userData, initalCards])=>{
+      setCurrentUser(userData)
+      setCards(initalCards)
+    }).catch(err=>{console.log(err)})
+  }
+}
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true)
@@ -78,6 +84,7 @@ function App() {
   }
 
   function handleUpdateUser(userInfo) {
+    console.log(userInfo)
     setIsLoading(true)
     api
       .setUserInfo(userInfo.values)
@@ -135,14 +142,7 @@ function App() {
     setSelectedCard({})
   }
 
-  // useEffect(() => {
-  //   api
-  //     .getInitialCards()
-  //     .then((initialCards) => {
-  //       setCards(initialCards)
-  //     })
-  //     .catch((err) => console.log(err))
-  // }, [])
+  
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((item) => item._id === currentUser._id)
@@ -181,10 +181,8 @@ function App() {
     auth
     .signIn(password, email)
     .then((response) => {
-      console.log(response)
-      if (response.token) {
-        localStorage.setItem('token', response.token)
-        setProfileEmail(email)
+      if (response.email) {
+        setProfileEmail(response.email)
         setLoggedIn(true)
           navigate('/')
         }
@@ -199,33 +197,30 @@ function App() {
 
   function handleUserLogOut() {
     if (loggedIn) {
-      localStorage.removeItem('token')
-      setProfileEmail('')
-      setLoggedIn(false)
-      navigate('/')
+      auth.signout().then(()=>{
+        setProfileEmail('')
+        setLoggedIn(false)
+        navigate('/')
+      })
     }
   }
 
   function handleCheckToken() {
-    const jwt = localStorage.getItem('token')
-    if (jwt) {
       auth
-        .checkToken(jwt)
+        .checkToken()
         .then((response) => {
-          setProfileEmail(response.data.email)
+          setProfileEmail(response.email)
           setLoggedIn(true)
           navigate('/')
         })
         .catch((e) => {
-          console.log(e)
           navigate('/sign-in')
           setLoggedIn(false)
         })
-    }
   }
 
   useEffect(() => {
-    handleCheckToken()
+      handleCheckToken()
   }, [])
 
   return (

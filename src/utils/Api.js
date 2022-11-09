@@ -31,8 +31,8 @@ class Api {
       body: JSON.stringify({
         name: userInfo.name,
         about: userInfo.about,
-        credentials: 'include'
       }), 
+      credentials: 'include'
     }).then(this.checkResponse)
   }
 
