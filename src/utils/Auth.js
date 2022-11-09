@@ -1,6 +1,6 @@
 class Auth {
   constructor() {
-    this._base_url = 'http://api.mesto.kip0.nomoredomains.icu'
+    this._base_url = 'https://api.mesto.kip0.nomoredomains.icu'
   }
 
   _getResponse(res) {
