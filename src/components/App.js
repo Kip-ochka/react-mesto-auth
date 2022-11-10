@@ -61,7 +61,7 @@ function getAlldata(){
     Promise.all([api.getUserInfo(), api.getInitialCards()])
     .then(([userData, initalCards])=>{
       setCurrentUser(userData)
-      setCards(initalCards)
+      setCards(initalCards.reverse())
     }).catch(err=>{console.log(err)})
   }
 }
@@ -84,7 +84,6 @@ function getAlldata(){
   }
 
   function handleUpdateUser(userInfo) {
-    console.log(userInfo)
     setIsLoading(true)
     api
       .setUserInfo(userInfo.values)
@@ -115,6 +114,7 @@ function getAlldata(){
     api
       .addCard(cardData.values)
       .then((newCard) => {
+        console.log(newCard)
         setCards([newCard, ...cards])
         closeAllPopup()
       })
